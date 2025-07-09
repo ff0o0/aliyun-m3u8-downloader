@@ -56,7 +56,10 @@ to quickly create a Cobra application.`,
 		playURL, _ := playInfo.Get("PlayURL").String()
 		tool.PrintJson(playURL)
 		key := tool.DecryptKey(clientRand, serverRand, plaintext)
-		downloader, err := download.NewTask(output, playURL, key)
+
+		// 添加文件名称
+		videoTitle, _ := sj.Get("VideoBase").Get("Title").String()
+		downloader, err := download.NewTask(output, playURL, key, videoTitle)
 		if err != nil {
 			panic(err)
 		}

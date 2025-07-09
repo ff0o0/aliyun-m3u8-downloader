@@ -39,9 +39,9 @@ type Downloader struct {
 }
 
 // NewTask returns a Task instance
-func NewTask(output string, url string, aliKey string) (*Downloader, error) {
+func NewTask(output string, url string, aliKey string, videoTitle string) (*Downloader, error) {
 	result, err := parse.FromURL(url, aliKey)
-	mergeTSFilename = tsFilename(url) + ".mp4"
+	mergeTSFilename = videoTitle + "-" + tsFilename(url) + ".mp4"
 	if err != nil {
 		return nil, err
 	}

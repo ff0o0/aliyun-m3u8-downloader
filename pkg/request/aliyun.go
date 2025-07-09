@@ -1,11 +1,12 @@
 package request
 
 import (
+	"log"
+
 	"github.com/bitly/go-simplejson"
 	"github.com/ddliu/go-httpclient"
 	"github.com/lbbniu/aliyun-m3u8-downloader/pkg/parse/aliyun"
 	"github.com/lbbniu/aliyun-m3u8-downloader/pkg/tool"
-	"log"
 )
 
 func init() {
@@ -16,6 +17,7 @@ func init() {
 		httpclient.OPT_USERAGENT: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36",
 		//httpclient.OPT_PROXY:      "http://127.0.0.1:8888",
 		httpclient.OPT_UNSAFE_TLS: true,
+		"referer":                 "https://academy.home-plan.cn/",
 	})
 }
 
