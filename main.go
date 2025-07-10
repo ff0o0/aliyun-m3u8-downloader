@@ -8,6 +8,7 @@ import (
 	"log"
 	"math/rand"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/bitly/go-simplejson"
@@ -8460,22 +8461,26 @@ func main() {
 
 	data, _ := simplejson.NewJson([]byte(infoStr))
 
-	// list, _ := data.Get("data").Get("widgets").Array()
+	list, _ := data.Get("data").Get("widgets").Array()
 
 	// 遍历list
-	for i := 0; i < 1; i++ {
+	for i := 0; i < len(list); i++ {
 		widget := data.Get("data").Get("widgets").GetIndex(i)
 
 		dirName, _ := widget.Get("title").String()
+		// 替换dirName中的 /
+
+		dirName = strings.ReplaceAll(dirName, "/", "_")
 		println("dirName= " + dirName)
 
-		// resources, _ := widget.Get("resources").Array()
+		resources, _ := widget.Get("resources").Array()
 
-		// for j := 0; j < len(resources); j++ {
-		for j := 0; j < 2; j++ {
+		for j := 0; j < len(resources); j++ {
+			// for j := 0; j < 2; j++ {
 			res := widget.Get("resources").GetIndex(j)
 
 			name, _ := res.Get("name").String()
+			name = strings.ReplaceAll(name, "/", "_")
 			vodId, _ := res.Get("vod_id").String()
 
 			result, _ := getInfo(vodId)
@@ -8495,7 +8500,7 @@ func main() {
 			// 生成 1-10 随机整数 (包含边界)
 			randomNumber := rand.Intn(20) + 1 + 50
 
-			println("等待" + strconv.Itoa(randomNumber) + "秒。。。。。。。。。")
+			println("等待 " + strconv.Itoa(randomNumber) + " 秒。。。。。。。。。")
 			time.Sleep(time.Duration(randomNumber) * time.Second)
 
 		}
@@ -8555,7 +8560,7 @@ func downVideo(playAuth string, videoId string, output string) {
 		return
 	}
 	playInfo := sj.Get("PlayInfoList").Get("PlayInfo").GetIndex(len(playInfoList) - 1)
-	tool.PrintJson(playInfo)
+	// tool.PrintJson(playInfo)
 	serverRand, _ := playInfo.Get("Rand").String()
 	plaintext, _ := playInfo.Get("Plaintext").String()
 	playURL, _ := playInfo.Get("PlayURL").String()
