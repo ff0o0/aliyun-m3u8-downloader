@@ -8501,7 +8501,10 @@ func main() {
 			randomNumber := rand.Intn(20) + 1 + 50
 
 			println("等待 " + strconv.Itoa(randomNumber) + " 秒。。。。。。。。。")
-			time.Sleep(time.Duration(randomNumber) * time.Second)
+			for w := 1; w < randomNumber; w++ {
+				tool.DrawProgressBar("wait"+strconv.Itoa(randomNumber)+"s", float32(w)/float32(randomNumber), 40)
+				time.Sleep(1 * time.Second)
+			}
 
 		}
 
