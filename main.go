@@ -5,18 +5,16 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"math/rand"
-	"strconv"
-	"strings"
-	"time"
-
 	"github.com/bitly/go-simplejson"
 	"github.com/ddliu/go-httpclient"
 	"github.com/google/uuid"
 	"github.com/lbbniu/aliyun-m3u8-downloader/pkg/download"
 	"github.com/lbbniu/aliyun-m3u8-downloader/pkg/request"
 	"github.com/lbbniu/aliyun-m3u8-downloader/pkg/tool"
+	"log"
+	"math/rand"
+	"strings"
+	"time"
 )
 
 // authorization
@@ -8454,6 +8452,11 @@ var infoStr = `{
     }
 }`
 
+func nameFormat(name string) string {
+	newName := strings.ReplaceAll(name, "/", "_")
+	return newName
+}
+
 func main() {
 	// cmd.Execute()
 
@@ -8470,7 +8473,7 @@ func main() {
 		dirName, _ := widget.Get("title").String()
 		// 替换dirName中的 /
 
-		dirName = strings.ReplaceAll(dirName, "/", "_")
+		dirName = nameFormat(dirName)
 		println("dirName= " + dirName)
 
 		resources, _ := widget.Get("resources").Array()
@@ -8480,7 +8483,7 @@ func main() {
 			res := widget.Get("resources").GetIndex(j)
 
 			name, _ := res.Get("name").String()
-			name = strings.ReplaceAll(name, "/", "_")
+			name = nameFormat(name)
 			vodId, _ := res.Get("vod_id").String()
 
 			result, _ := getInfo(vodId)
@@ -8572,6 +8575,7 @@ func downVideo(playAuth string, videoId string, output string) {
 
 	// 添加文件名称
 	videoTitle, _ := sj.Get("VideoBase").Get("Title").String()
+	videoTitle = nameFormat(videoTitle)
 	downloader, err := download.NewTask(output, playURL, key, videoTitle)
 	if err != nil {
 		panic(err)

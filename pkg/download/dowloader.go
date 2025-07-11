@@ -2,8 +2,8 @@ package download
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
-	"github.com/ddliu/go-httpclient"
 	"io/ioutil"
 	"os"
 	"path"
@@ -11,6 +11,8 @@ import (
 	"strings"
 	"sync"
 	"sync/atomic"
+
+	"github.com/ddliu/go-httpclient"
 
 	"github.com/lbbniu/aliyun-m3u8-downloader/pkg/parse"
 	"github.com/lbbniu/aliyun-m3u8-downloader/pkg/parse/aliyun"
@@ -38,6 +40,20 @@ type Downloader struct {
 	result *parse.Result
 }
 
+// FileExists 检查文件是否存在且是普通文件（非目录）
+func isFileExists(path string) bool {
+	info, err := os.Stat(path)
+	if errors.Is(err, os.ErrNotExist) {
+		return false
+	}
+	// 处理其他可能的错误（如权限不足）
+	if err != nil {
+		return false
+	}
+	// 确认不是目录
+	return !info.IsDir()
+}
+
 // NewTask returns a Task instance
 func NewTask(output string, url string, aliKey string, videoTitle string) (*Downloader, error) {
 	result, err := parse.FromURL(url, aliKey)
@@ -56,6 +72,13 @@ func NewTask(output string, url string, aliKey string, videoTitle string) (*Down
 	} else {
 		folder = output
 	}
+
+	// file is exit, return
+	filePath := filepath.Join(folder, mergeTSFilename)
+	if isFileExists(filePath) {
+		return nil, fmt.Errorf("jump download, file is exit: %s", filePath)
+	}
+
 	if err := os.MkdirAll(folder, os.ModePerm); err != nil {
 		return nil, fmt.Errorf("create storage folder failed: %s", err.Error())
 	}
